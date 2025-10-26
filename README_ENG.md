@@ -2,10 +2,10 @@
 
 <div align="center">
 
-[![en](https://img.shields.io/badge/lang-English-blue.svg)](README_ENG.md)
-[![it](https://img.shields.io/badge/lang-Italiano-green.svg)](README.md)
+[![en](https://img.shields.io/badge/lang-English-blue.svg)](README.md)
+[![it](https://img.shields.io/badge/lang-Italiano-green.svg)](README_IT.md)
 
-**🇬🇧 English Version** | **[🇮🇹 Versione Italiana](README.md)**
+**🇬🇧 English Version** | **[🇮🇹 Versione Italiana](README_IT.md)**
 
 </div>
 
@@ -27,7 +27,7 @@ Perfect for companies handling high volumes of customer support emails.
 - 🎯 **Dual-Model AI Classification**: Specialized models for urgency and department routing
 - 🚀 **REST API**: Production-ready FastAPI implementation with authentication
 - 📬 **Gmail Integration**: Direct integration with Gmail API for automated processing
-- ⚡ **High Performance**: <150ms response time, 1000+ emails/hour batch processing
+- ⚡ **High Performance**: Fast processing with batch support
 - 🔧 **Hot-Reload Config**: Update parameters without restarting the service
 - 📊 **Real-time Monitoring**: Performance metrics and health checks
 - 🔒 **Enterprise Security**: JWT authentication, rate limiting, API keys
@@ -43,7 +43,8 @@ Perfect for companies handling high volumes of customer support emails.
 ├── 📧 gmail_classifier.py         # Gmail API integration
 ├── 📁 config/                     # Configuration management
 │   ├── models.py                  # Config data models
-│   └── classifier.yaml            # AI/ML parameters
+│   ├── classifier.yaml            # AI/ML parameters
+│   └── classifier_production.yaml # Production configuration
 ├── 🔬 classifiers/                # Specialized classifiers
 │   ├── urgency_classifier.py      # Urgency analysis
 │   └── department_classifier.py   # Department routing
@@ -60,8 +61,8 @@ Perfect for companies handling high volumes of customer support emails.
 ### Prerequisites
 ```bash
 Python 3.8+
-Gmail API credentials (credentials.json)
 4GB RAM minimum (8GB recommended)
+(Optional) Gmail API credentials for Gmail integration
 ```
 
 ### Installation
@@ -74,16 +75,86 @@ cd AI_customer_support
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Configure Gmail API
-# - Download credentials.json from Google Cloud Console
-# - Place it in the project root directory
+# 3. (Optional) Configure Gmail API
+# See "Gmail API Configuration" section below
 
 # 4. Start the API server
 python api.py
 # Server running at: http://localhost:8000
 
-# 5. Test Gmail classification
+# 5. (Optional) Test Gmail classification
 python gmail_classifier.py
+```
+
+---
+
+## 🔐 Gmail API Configuration (Optional)
+
+Gmail integration is **optional**. The system works perfectly via REST API without Gmail. If you want to test direct classification of your Gmail emails, follow these steps:
+
+### Step 1: Create a Project on Google Cloud Console
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Click **"Select a project"** → **"New project"**
+3. Enter a name (e.g., "Email Classifier")
+4. Click **"Create"**
+
+### Step 2: Enable Gmail API
+
+1. In the side menu, go to **"APIs & Services"** → **"Library"**
+2. Search for **"Gmail API"**
+3. Click on **"Gmail API"** in the results
+4. Click **"Enable"**
+
+### Step 3: Configure OAuth Consent Screen
+
+1. In the side menu, go to **"APIs & Services"** → **"OAuth consent screen"**
+2. Select **"External"** as user type
+3. Click **"Create"**
+4. Fill in the required fields:
+   - **Application name**: "Email Classifier"
+   - **User support email**: your email
+   - **Developer contact email**: your email
+5. Click **"Save and continue"**
+6. In the **"Scopes"** section, click **"Add or remove scopes"**
+7. Search for and select: `https://www.googleapis.com/auth/gmail.readonly`
+8. Click **"Update"** → **"Save and continue"**
+9. In the **"Test users"** section, add your Gmail email
+10. Click **"Save and continue"**
+
+### Step 4: Create Credentials
+
+1. In the side menu, go to **"APIs & Services"** → **"Credentials"**
+2. Click **"Create credentials"** → **"OAuth client ID"**
+3. Select **"Desktop app"** as application type
+4. Enter a name (e.g., "Email Classifier Desktop")
+5. Click **"Create"**
+6. In the popup window, click **"Download JSON"**
+7. Rename the downloaded file to `credentials.json`
+8. Move `credentials.json` to the project root directory
+
+### Step 5: First Use
+
+1. Run `python gmail_classifier.py`
+2. Your browser will automatically open with the Google login screen
+3. Sign in with the Gmail account you added as a "test user"
+4. Authorize the application (you may see a "App not verified" warning, click "Advanced" → "Go to Email Classifier")
+5. A `token.pickle` file will be automatically created for future sessions
+
+### ⚠️ Important Notes
+
+- Credentials are **personal** and should not be shared or uploaded to public repositories
+- The `credentials.json` file allows **only** read-only access to your emails (`readonly` scope)
+- You can revoke access anytime from [Google Account Settings](https://myaccount.google.com/permissions)
+
+### 🔒 Files NOT to Upload to Git
+
+Add to your `.gitignore`:
+```
+credentials.json
+token.pickle
+gmail_report_*.html
+gmail_report_*.txt
 ```
 
 ---
@@ -133,6 +204,14 @@ print(f"Department: {result['department']}")        # technical
 print(f"Confidence: {result['overall_confidence']}") # 0.94
 ```
 
+### API Keys for Testing
+
+The system includes two test keys:
+- `demo_key_12345` - Basic tier (for demo and development)
+- `prod_key_67890` - Premium tier (for production simulation)
+
+**Note**: In production, replace with a secure authentication system.
+
 ---
 
 ## 🎯 Classification Examples
@@ -141,8 +220,8 @@ print(f"Confidence: {result['overall_confidence']}") # 0.94
 ```
 Input: "CRITICAL: Production database crashed"
 Output:
-├── Urgency: CRITICAL (95% confidence)
-├── Department: TECHNICAL (98% confidence)
+├── Urgency: CRITICAL (high confidence)
+├── Department: TECHNICAL (high confidence)
 └── Action: Auto-escalation → DevOps Team
 ```
 
@@ -150,8 +229,8 @@ Output:
 ```
 Input: "Interested in a demo for 500 users"
 Output:
-├── Urgency: HIGH (87% confidence)
-├── Department: SALES (92% confidence)
+├── Urgency: HIGH (high confidence)
+├── Department: SALES (high confidence)
 └── Action: Route → Sales Manager
 ```
 
@@ -159,8 +238,8 @@ Output:
 ```
 Input: "Invoice discrepancy - charged twice"
 Output:
-├── Urgency: HIGH (91% confidence)
-├── Department: BILLING (95% confidence)
+├── Urgency: HIGH (high confidence)
+├── Department: BILLING (high confidence)
 └── Action: Route → Finance Team
 ```
 
@@ -176,13 +255,19 @@ The system uses **two specialized AI classifiers** working in parallel:
 - Analyzes emotional tone and keywords
 - Detects time-sensitive indicators
 - Evaluates business impact
-- Pattern: "emergency", "down", "asap", "critical"
+- Patterns: "emergency", "down", "asap", "critical"
 
 #### 2. Department Classifier
 - Technical content recognition
 - Financial terminology detection
 - Sales language patterns
 - Sender domain analysis
+
+### AI Models Used
+
+- **Sentiment Analysis**: `cardiffnlp/twitter-roberta-base-sentiment-latest`
+- **Emotion Detection**: `j-hartmann/emotion-english-distilroberta-base`
+- **Zero-shot Classification**: `facebook/bart-large-mnli`
 
 ### Cross-Validation Logic
 
@@ -197,45 +282,53 @@ if department == 'technical' and urgency == 'high':
 
 ---
 
-## 📊 Performance Metrics
-
-- **Urgency Classification**: 89% accuracy
-- **Department Routing**: 92% accuracy
-- **Response Time**: <150ms per email
-- **Throughput**: 1000+ emails/hour (batch mode)
-- **Model Confidence**: Average 85%+
-
----
-
 ## 🔧 Configuration
 
 Customize behavior via `config/classifier.yaml`:
 
 ```yaml
-processing:
-  confidence_threshold: 0.7
-  batch_size: 50
-  timeout_seconds: 30
-
+# AI models configuration
 models:
-  urgency_model: "enterprise_v3.0"
-  department_model: "custom_trained"
-  enable_gpu: false
+  sentiment_model: "cardiffnlp/twitter-roberta-base-sentiment-latest"
+  emotion_model: "j-hartmann/emotion-english-distilroberta-base"
+  bert_model: "facebook/bart-large-mnli"
+  use_gpu: true  # Use GPU if available
+  max_text_length: 512
 
-patterns:
-  technical_keywords: ["api", "database", "server", "error"]
-  critical_patterns: ["down", "crashed", "emergency"]
+# Urgency thresholds
+urgency:
+  critical_threshold: 4.0
+  high_threshold: 2.0
+  medium_threshold: 1.0
+  low_threshold: 0.5
+
+# Processing parameters
+processing:
+  max_email_length: 5000
+  batch_size: 32
+  enable_emotion_model: true
+  enable_bert_model: true
+  log_level: INFO
+
+# Pattern weights
+weights:
+  core_pattern_weight: 2.0
+  department_signal_weight: 3.0
+  caps_ratio_weight: 3.0
+```
+
+### Hot-Reload Configuration
+
+You can modify parameters and reload them without restarting the server:
+
+```bash
+# Edit config/classifier.yaml
+# Then reload via API:
+curl -X POST http://localhost:8000/config/reload \
+  -H "Authorization: Bearer demo_key_12345"
 ```
 
 ---
-
-## 💼 Business Value
-
-### ROI Metrics
-- **60% reduction** in response time
-- **10x more emails** handled with same team
-- **40% decrease** in operational costs
-- **40% increase** in customer satisfaction
 
 ### Use Cases
 - 🏢 Enterprise customer support automation
@@ -246,40 +339,93 @@ patterns:
 
 ---
 
+## 🧪 Testing and Validation
+
+### Run Validation Suite
+
+```bash
+python email_classifier.py
+```
+
+This will execute:
+- Tests on 4 different scenarios (critical, low, billing, sales)
+- Urgency and department accuracy validation
+- Response time measurement
+- Hot-reload configuration test
+- Batch processing test
+
+### Custom Test
+
+```python
+from email_classifier import EmailClassifier
+
+classifier = EmailClassifier("config/classifier.yaml")
+classifier.load_models()
+
+result = classifier.classify_email({
+    'subject': 'Your test',
+    'testo_email': 'Your content',
+    'sender': 'test@example.com'
+})
+
+print(f"Urgency: {result['urgency']}")
+print(f"Department: {result['department']}")
+print(f"Confidence: {result['overall_confidence']:.1%}")
+```
+
+---
+
 ## ⚠️ Known Limitations
 
-**Transparent Disclosure:**
+**Transparency:**
 
 This project was developed on **personal laptop hardware** with limited resources:
 
-- Small pre-trained models (not fine-tuned on large datasets)
-- CPU-only inference (no GPU acceleration)
+- Small pre-trained models (not fine-tuned on company-specific datasets)
+- CPU-only inference (no GPU acceleration used during development)
 - Limited training data for validation
+- System optimized primarily for **English language** emails
 
-**In an enterprise environment** with proper resources:
-- Accuracy could exceed 95%
-- Response time could drop to <50ms
-- Support for advanced transformers (BERT, GPT)
-- Continuous learning on company-specific data
+**In an enterprise environment** with adequate resources:
+- Accuracy could be significantly improved with fine-tuning on company data
+- Response time could be reduced with dedicated GPUs
+- Support for more advanced transformers (BERT large, GPT)
+- Continuous learning on real company data
+- Native multi-language support
 
 ---
 
 ## 🔮 Future Roadmap
 
-- [ ] Transformer models integration (BERT/GPT)
-- [ ] Multi-language support
-- [ ] Real-time learning from corrections
-- [ ] CRM integrations (Salesforce, Zendesk, HubSpot)
-- [ ] Slack/Teams notifications
+### Technical Improvements
+- [ ] Integration of more advanced Transformer models (BERT large, GPT-4)
+- [ ] Multi-language support (Italian, Spanish, French, German)
+- [ ] Fine-tuning on company-specific datasets
+- [ ] Real-time learning from manual corrections
+- [ ] Support for attachments and images in emails
+
+### Integrations
+- [ ] CRM: Salesforce, Zendesk, HubSpot, Freshdesk
+- [ ] Notifications: Slack, Microsoft Teams, Discord
+- [ ] Ticketing: Jira, Linear, Asana
+- [ ] Email providers: Outlook, Office 365, Exchange
+
+### Features
+- [ ] Advanced analytics dashboard with charts
 - [ ] Mobile app for priority management
-- [ ] Advanced analytics dashboard
+- [ ] Feedback and manual correction system
+- [ ] Custom report exports
+- [ ] Webhooks for custom integrations
 
 ---
 
 ## 📚 Technical Stack
 
-- **Backend**: Python 3.8+, FastAPI
-- **AI/ML**: scikit-learn, transformers, PyTorch
+- **Backend**: Python 3.8+, FastAPI, Uvicorn
+- **AI/ML**: 
+  - PyTorch 
+  - Transformers (Hugging Face)
+  - scikit-learn
 - **Integration**: Gmail API, OAuth 2.0
 - **Configuration**: YAML, Pydantic
 - **API**: REST, JWT authentication
@@ -293,27 +439,47 @@ This project is developed as a **portfolio demonstration** of AI/ML capabilities
 
 ---
 
-## 👤 Author
+## 🎯 Demo Usage
 
-Developed to showcase practical AI implementation skills for professional opportunities in the tech sector.
+### Suggested Live Demos
 
-**Skills Demonstrated:**
-- ✅ AI/Machine Learning implementation
-- ✅ REST API design and development
-- ✅ System integration (Gmail, OAuth)
-- ✅ Modular architecture
-- ✅ Production-ready code
-- ✅ Business problem solving
+**1. API Demo via Swagger UI**
+```bash
+# Start the server
+python api.py
 
----
+# Open browser at:
+http://localhost:8000/docs
+```
+
+**2. Single Email Classification Demo**
+```bash
+curl -X POST http://localhost:8000/classify \
+  -H "Authorization: Bearer demo_key_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subject": "URGENT: Main server down",
+    "testo_email": "Our production database has not been responding for 30 minutes. Customers cannot place orders.",
+    "sender": "ops@company.com"
+  }'
+```
+
+**3. Health Check Demo**
+```bash
+curl http://localhost:8000/health
+```
+
+**4. Gmail Integration Demo** (if configured)
+```bash
+python gmail_classifier.py
+# Will classify the last 10 emails and generate HTML report
+```
 
 ## 📧 Contact
 
-Available for:
-- Live demonstrations
-- Technical deep-dives
-- Custom implementations
-- Professional opportunities
+email: vin.cenzo96@hotmail.it
+linkedin: https://www.linkedin.com/in/vincenzo-vigna-931a202a
+researchgate: https://www.researchgate.net/profile/Vincenzo-Vigna-2
 
 ---
 
@@ -328,8 +494,6 @@ Available for:
 ![AI](https://img.shields.io/badge/AI/ML-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
 
 ---
-
-**Made with ❤️ for demonstrating AI engineering capabilities**
 
 **[⬆ Back to top](#-ai-email-classification-system)**
 
