@@ -383,9 +383,7 @@ print(f"Confidenza: {result['overall_confidence']:.1%}")
 
 ---
 
-## ⚠️ Limitazioni Note
-
-**Trasparenza:**
+## ⚠️ Limitazioni 
 
 Questo progetto è stato sviluppato su **hardware laptop personale** con risorse limitate:
 
@@ -443,15 +441,8 @@ Questo progetto è stato sviluppato su **hardware laptop personale** con risorse
 
 ## 📄 Licenza
 
-Questo progetto è sviluppato come **dimostrazione portfolio** di competenze AI/ML e ingegneria del software.
+Questo progetto è sviluppato come **dimostrazione portfolio**.
 
----
-
-## 👤 Autore
-
-Sviluppato per dimostrare competenze pratiche di implementazione AI per opportunità professionali nel settore tecnologico.
-
-**Competenze Dimostrate:**
 - ✅ Implementazione AI/Machine Learning
 - ✅ Design e sviluppo API REST production-ready
 - ✅ Integrazione sistemi esterni (Gmail, OAuth)
@@ -497,23 +488,11 @@ python gmail_classifier.py
 # Classificherà le ultime 10 email e genererà report HTML
 ```
 
-### Punti di Forza da Evidenziare
-
-1. **Architettura Modulare**: Separazione chiara delle responsabilità
-2. **Production-Ready**: Autenticazione, rate limiting, error handling
-3. **Configurabilità**: Hot-reload senza downtime
-4. **Performance**: Elaborazione rapida con supporto batch
-5. **Estensibilità**: Facile aggiungere nuovi classificatori o modelli
-
----
-
 ## 📧 Contatto
 
-Disponibile per:
-- Dimostrazioni live del sistema
-- Approfondimenti tecnici sull'architettura
-- Discussioni su implementazioni personalizzate
-- Opportunità professionali nel settore AI/ML
+email: vin.cenzo96@hotmail.it
+linkedin: https://www.linkedin.com/in/vincenzo-vigna-931a202a
+researchgate: https://www.researchgate.net/profile/Vincenzo-Vigna-2
 
 ---
 
@@ -529,8 +508,7 @@ Disponibile per:
 
 ---
 
-**Sviluppato con ❤️ per dimostrare competenze di AI engineering**
-
 **[⬆ Torna su](#-sistema-di-classificazione-email-ai)**
 
 </div>
+
