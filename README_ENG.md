@@ -2,10 +2,10 @@
 
 <div align="center">
 
-[![en](https://img.shields.io/badge/lang-English-blue.svg)](README.md)
-[![it](https://img.shields.io/badge/lang-Italiano-green.svg)](README_IT.md)
+[![en](https://img.shields.io/badge/lang-English-blue.svg)](README_ENG.md)
+[![it](https://img.shields.io/badge/lang-Italiano-green.svg)](README.md)
 
-**🇬🇧 English Version** | **[🇮🇹 Versione Italiana](README_IT.md)**
+**🇬🇧 English Version** | **[🇮🇹 Versione Italiana](README.md)**
 
 </div>
 
